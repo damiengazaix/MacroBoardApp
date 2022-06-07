@@ -1,24 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
              x:Class="MacroBoardApp.MainPage">
 
-    <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
-        </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-    </StackLayout>
+    <Grid x:Name="MainGrid" BackgroundColor="#4C4A4A">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Image Source="Waiting" Scale="0.2" IsAnimationPlaying="True" IsVisible="{Binding waitImgVisibility}"/>
+
+        <syncfusion:SfListView x:Name="WfList_XAML"
+                               AutoFitMode="Height"
+                               Margin="0,10,0,0"
+                               >
+
+            <syncfusion:SfListView.LayoutManager>
+                <syncfusion:GridLayout SpanCount="2"/>
+            </syncfusion:SfListView.LayoutManager>
+
+            <syncfusion:SfListView.ItemTemplate>
+                
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- With Border -->
+                        <ImageButton Margin="20,0,20,0" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" Source="{Binding ImgSource}" Padding="1" BorderWidth="4" BorderColor="Black" CornerRadius="5"/>
+                        <!--<ImageButton BackgroundColor="Transparent" Source="{Binding ImgSource}" CornerRadius="30"/>-->
+                        <Label TextColor="Black" FontFamily="Bahnschrift" Grid.Row="1" FontSize="20" HorizontalTextAlignment="Center" Text="{Binding Name}"/>
+                    </Grid>
+                </DataTemplate>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
+
+
+        <Button BackgroundColor="#6F6C6C" Margin="80,0,80,5" CornerRadius="20" BorderWidth="2" BorderColor="Black" x:Name="BtnConnect" Text="Connect" Grid.Row="1" Clicked="Btn_Connect_Clicked"/>
+
+    </Grid>
 
 </ContentPage>
