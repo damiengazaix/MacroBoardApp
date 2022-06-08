@@ -18,6 +18,8 @@ namespace MacroBoardApp
     public partial class MainPage : ContentPage
     {
         NetworkStream stream;
+        IPAddress localAddr;
+        public TcpClient clientSender;
         ObservableCollection<Workflow> WfList { get; set; }
         public bool waitImgVisibility { get; set; } = false;
 
@@ -50,7 +52,7 @@ namespace MacroBoardApp
 
         private void Reload_Workflows()
         {
-            IPAddress localAddr = IPAddress.Parse("147.94.6.168");
+            localAddr = IPAddress.Parse("147.94.6.168");
             int port = 13000;
             TcpClient client = new TcpClient(localAddr.ToString(), port);
             stream = client.GetStream();
@@ -118,14 +120,29 @@ namespace MacroBoardApp
 
         }
 
-
         public void BtnOnclick(object sender, EventArgs args)
         {
+            if (clientSender == null)
+                return;
+            NetworkStream streamSender = clientSender.GetStream();
             string nameBtn = ((Button)sender).Text;
             Console.WriteLine("name : " + nameBtn);
-            byte[] nameToSend = Encoding.ASCII.GetBytes(nameBtn);
-            stream.Write(nameToSend, 0, nameToSend.Length);
+
+            byte[] nameToSend = Encoding.ASCII.GetBytes("" + nameBtn.Length);
+            streamSender.Write(nameToSend, 0, nameToSend.Length);
+            byte[] okReception = new byte[8];
+            streamSender.Read(okReception, 0, okReception.Length);
+
+            nameToSend = Encoding.ASCII.GetBytes(nameBtn);
+            streamSender.Write(nameToSend, 0, nameToSend.Length);
+
+
+
+
         }
+
+
+       
 
 
         private ImageSource byteArrayToImage(byte[] byteArrayIn)

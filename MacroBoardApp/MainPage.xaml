@@ -31,7 +31,7 @@
                         </Grid.RowDefinitions>
                         
                         <!-- With Border -->
-                        <ImageButton Margin="20,0,20,0" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" Source="{Binding ImgSource}" Padding="1" BorderWidth="4" BorderColor="Black" CornerRadius="5"/>
+                        <ImageButton Margin="20,0,20,0" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" Source="{Binding ImgSource}" Padding="1" BorderWidth="4" BorderColor="Black" CornerRadius="5"  Clicked="BtnOnclick"/>
                         <!--<ImageButton BackgroundColor="Transparent" Source="{Binding ImgSource}" CornerRadius="30"/>-->
                         <Label TextColor="Black" FontFamily="Bahnschrift" Grid.Row="1" FontSize="20" HorizontalTextAlignment="Center" Text="{Binding Name}"/>
                     </Grid>
