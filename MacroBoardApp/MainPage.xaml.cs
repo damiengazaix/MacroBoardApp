@@ -42,8 +42,6 @@ namespace MacroBoardApp
             WfList_XAML.ItemsSource = WfList;
             widthPhone = DeviceDisplay.MainDisplayInfo.Width / 6.25;
 
-        }
-
             //IpBar.Text = Preferences.Get("IP", "default");
 
             Trace.WriteLine("TEST", "TEST");
