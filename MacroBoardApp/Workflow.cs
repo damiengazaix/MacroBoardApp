@@ -9,11 +9,12 @@ namespace MacroBoardApp
     {
         public string Name { get; set; }
         public ImageSource ImgSource { get; set; }
-
-        public Workflow(string Name, ImageSource ImgSource)
+        public double widthPhone { get; set; }
+        public Workflow(string Name, ImageSource ImgSource, double widthPhone)
         {
             this.Name = Name;
             this.ImgSource = ImgSource;
+            this.widthPhone = widthPhone;
         }
     }
 }

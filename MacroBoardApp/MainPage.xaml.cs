@@ -24,6 +24,7 @@ namespace MacroBoardApp
         public TcpClient client;
         ObservableCollection<Workflow> WfList { get; set; }
         public bool waitImgVisibility { get; set; } = false;
+        public double widthPhone;
 
         private bool isConnected { get; set; } = false;
         public string lblColor { get; set; } = "Red";
@@ -33,11 +34,15 @@ namespace MacroBoardApp
             //Register Syncfusion license
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjUxNTAyQDMyMzAyZTMxMmUzMGJsbW9vVzMxaUtEdnVRbWNOYVdpc2VtYUdOREIyQjZyUCt6VWRCK0hGbDg9");
 
+
             InitializeComponent();
             BindingContext = this;
 
             WfList = new ObservableCollection<Workflow>();
             WfList_XAML.ItemsSource = WfList;
+            widthPhone = DeviceDisplay.MainDisplayInfo.Width / 6.25;
+
+        }
 
             //IpBar.Text = Preferences.Get("IP", "default");
 
@@ -47,6 +52,7 @@ namespace MacroBoardApp
 
         private void Btn_Connect_Clicked(object sender, EventArgs e)
         {
+            Console.WriteLine(widthPhone);
             WfList.Clear();
             waitImgVisibility = true;
 
@@ -115,7 +121,7 @@ namespace MacroBoardApp
                     stream.Write(confirmMsg, 0, confirmMsg.Length);
 
                     WfList.Add(new Workflow(Encoding.ASCII.GetString(nameData, 0, nameData.Length),
-                        byteArrayToImage(imgData.ToArray())));
+                        byteArrayToImage(imgData.ToArray()), widthPhone));
 
                     Console.WriteLine("Everything Received");
                 }
