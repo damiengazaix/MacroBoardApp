@@ -12,16 +12,21 @@ using Xamarin.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Xamarin.Essentials;
 
 namespace MacroBoardApp
 {
     public partial class MainPage : ContentPage
     {
         NetworkStream stream;
-        IPAddress localAddr;
+        string localAddr;
         public TcpClient clientSender;
+        public TcpClient client;
         ObservableCollection<Workflow> WfList { get; set; }
         public bool waitImgVisibility { get; set; } = false;
+
+        private bool isConnected { get; set; } = false;
+        public string lblColor { get; set; } = "Red";
 
         public MainPage()
         {
@@ -33,8 +38,12 @@ namespace MacroBoardApp
 
             WfList = new ObservableCollection<Workflow>();
             WfList_XAML.ItemsSource = WfList;
-        }
 
+            //IpBar.Text = Preferences.Get("IP", "default");
+
+            Trace.WriteLine("TEST", "TEST");
+
+        }
 
         private void Btn_Connect_Clicked(object sender, EventArgs e)
         {
@@ -47,21 +56,21 @@ namespace MacroBoardApp
                 waitImgVisibility = false;
             };
 
-            Thread thread = new Thread(starter) { IsBackground = true };
+            Thread thread = new Thread(()=>AppIsConnected());
             thread.Start();
 
-
-
+            if (isConnected)
+            {
+                Thread thread2 = new Thread(starter) { IsBackground = true };
+                thread2.Start();
+            }
+            
 
         }
 
-        private void Reload_Workflows()
+        private async void Reload_Workflows()
         {
-            localAddr = IPAddress.Parse("147.94.234.152");
-            int port = 13000;
-            TcpClient client = new TcpClient(localAddr.ToString(), port);
-            stream = client.GetStream();
-            Trace.WriteLine("Connected");
+
             try
             {
                 List<byte> imgData = new List<byte>();
@@ -121,16 +130,60 @@ namespace MacroBoardApp
             catch (ArgumentNullException ee)
             {
                 Console.WriteLine("ArgumentNullException: {0}", ee);
+                stream.Close();
+                client.Close();
             }
             catch (SocketException ee)
             {
                 Console.WriteLine("SocketException: {0}", ee);
+                stream.Close();
+                client.Close();
             }
             catch (NullReferenceException ee)
             {
                 Console.WriteLine("NullReferenceException: {0}", ee);
+                stream.Close();
+                client.Close();
             }
 
+        }
+
+        private void AppIsConnected()
+        {
+            while (true)
+            {
+                Trace.WriteLine("rjghrjgjhr", "TEST");
+
+                Thread thread = new Thread(() => setupConnect());
+                thread.Start();
+
+                Thread.Sleep(2000);
+
+                if (!isConnected)
+                {
+                    thread.Abort();
+                    lblColor = "Red";
+                }
+                Trace.WriteLine(isConnected, "TEST");
+            }
+            
+        }
+
+        private void setupConnect()
+        {
+            isConnected = false;
+
+            localAddr = IpBar.Text;
+
+            Preferences.Set("IP", IpBar.Text);
+            Console.WriteLine(Preferences.Get("IP", "default"));
+
+            int port = 13000;
+            client = new TcpClient(localAddr.ToString(), port);
+            stream = client.GetStream();
+
+            lblColor = "#6F6C6C";
+            isConnected = true;
         }
 
         public void BtnOnclick(object sender, EventArgs args)
@@ -161,10 +214,6 @@ namespace MacroBoardApp
 
 
         }
-
-
-
-
 
         private ImageSource byteArrayToImage(byte[] byteArrayIn)
         {
