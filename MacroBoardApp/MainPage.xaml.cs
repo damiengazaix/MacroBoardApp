@@ -42,17 +42,22 @@ namespace MacroBoardApp
             waitImgVisibility = true;
 
             ThreadStart starter = Reload_Workflows;
-            starter += () => {
+            starter += () =>
+            {
                 waitImgVisibility = false;
             };
 
             Thread thread = new Thread(starter) { IsBackground = true };
             thread.Start();
+
+
+
+
         }
 
         private void Reload_Workflows()
         {
-            localAddr = IPAddress.Parse("147.94.6.168");
+            localAddr = IPAddress.Parse("147.94.234.152");
             int port = 13000;
             TcpClient client = new TcpClient(localAddr.ToString(), port);
             stream = client.GetStream();
@@ -61,6 +66,7 @@ namespace MacroBoardApp
             {
                 List<byte> imgData = new List<byte>();
                 byte[] imgLength = new byte[20];
+                byte[] nameLength = new byte[20];
                 byte[] nameData = new byte[50];
 
                 byte[] wfNumber = new byte[1];
@@ -70,7 +76,7 @@ namespace MacroBoardApp
                 {
                     imgData = new List<byte>();
                     imgLength = new byte[20];
-                    nameData = new byte[50];
+                    nameLength = new byte[20];
 
                     stream.Read(imgLength, 0, imgLength.Length);
 
@@ -90,7 +96,11 @@ namespace MacroBoardApp
                     confirmMsg = Encoding.ASCII.GetBytes("Image Receive");
                     stream.Write(confirmMsg, 0, confirmMsg.Length);
 
-                    stream.Read(nameData, 0, nameData.Length);
+                    stream.Read(nameLength, 0, nameLength.Length);
+
+                    int nameMaxLen = Int32.Parse(Encoding.ASCII.GetString(nameLength));
+                    nameData = new byte[nameMaxLen];
+                    stream.Read(nameData, 0, nameMaxLen);
 
                     confirmMsg = Encoding.ASCII.GetBytes("Everything Received");
                     stream.Write(confirmMsg, 0, confirmMsg.Length);
@@ -104,6 +114,9 @@ namespace MacroBoardApp
                 // Close everything.
                 stream.Close();
                 client.Close();
+                int portsender = 14000;
+                clientSender = new TcpClient(localAddr.ToString(), portsender);
+                Trace.WriteLine("Connected");
             }
             catch (ArgumentNullException ee)
             {
@@ -124,14 +137,19 @@ namespace MacroBoardApp
         {
             if (clientSender == null)
                 return;
+
             NetworkStream streamSender = clientSender.GetStream();
-            string nameBtn = ((Button)sender).Text;
+
+            string nameBtn = ((Label)((Grid)((ImageButton)sender).Parent).Children[1]).Text.Trim();
             Console.WriteLine("name : " + nameBtn);
 
-            byte[] nameToSend = Encoding.ASCII.GetBytes("" + nameBtn.Length);
+            byte[] nameToSend = Encoding.ASCII.GetBytes(nameBtn.Length.ToString());
             streamSender.Write(nameToSend, 0, nameToSend.Length);
+            Console.WriteLine("size : " + Encoding.ASCII.GetString(nameToSend));
+
             byte[] okReception = new byte[8];
             streamSender.Read(okReception, 0, okReception.Length);
+
 
             nameToSend = Encoding.ASCII.GetBytes(nameBtn);
             streamSender.Write(nameToSend, 0, nameToSend.Length);
@@ -139,10 +157,13 @@ namespace MacroBoardApp
 
 
 
+
+
+
         }
 
 
-       
+
 
 
         private ImageSource byteArrayToImage(byte[] byteArrayIn)
