@@ -3,19 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
              x:Class="MacroBoardApp.MainPage"
-             xmlns:local="clr-namespace:MacroBoardApp;assembly=MacroBoardApp">
+             xmlns:local="clr-namespace:MacroBoardApp;assembly=MacroBoardApp"
+             >
 
     <Grid x:Name="MainGrid" BackgroundColor="#4C4A4A">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.8*"/>
 
             <RowDefinition Height="5*"/>
 
-            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.8*"/>
 
         </Grid.RowDefinitions>
 
-        <Image Source="Waiting" Scale="0.2" IsAnimationPlaying="True" IsVisible="{Binding waitImgVisibility}"/>
 
         <syncfusion:SfListView x:Name="WfList_XAML"
                                AutoFitMode="Height"
@@ -44,7 +44,18 @@
             </syncfusion:SfListView.ItemTemplate>
         </syncfusion:SfListView>
 
-        <Button BackgroundColor="{Binding Path=lblColor}" Margin="100,0,100,5" CornerRadius="20" BorderWidth="2" BorderColor="Black" x:Name="BtnConnect" Text="Connect" Grid.Row="2" Clicked="Btn_Connect_Clicked"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button IsEnabled="{Binding Path=btnConnectIsEnable.Value}" BackgroundColor="Gray" Margin="10,0,10,5" CornerRadius="20" BorderWidth="2" BorderColor="Black" x:Name="BtnConnect" Text="{Binding Path=btnName.Value}" Grid.Column="0" Clicked="Btn_Connect_Clicked"/>
+            <Button IsEnabled="{Binding Path=btnDisconnectIsEnable.Value}" BackgroundColor="Gray" Margin="10,0,10,5" CornerRadius="20" BorderWidth="2" BorderColor="Black" x:Name="BtnDisconnect" Text="Refresh Ip Address" Grid.Column="1" Clicked="Btn_Disconnect_Clicked"/>
+            
+        </Grid>
+        
+        
         <Entry x:Name="IpBar"  Margin="10" HorizontalOptions="FillAndExpand"  VerticalOptions="CenterAndExpand" FontSize="Title" TextColor="LightGray" HorizontalTextAlignment="Center">
 
         </Entry>
