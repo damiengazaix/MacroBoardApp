@@ -89,7 +89,6 @@ namespace MacroBoardApp
                 thread.Abort();
 
                 btnConnectIsEnable.Value = true;
-                btnDisconnectIsEnable.Value = false;
                 btnName.Value = "Connect";
                 
             }
@@ -101,6 +100,8 @@ namespace MacroBoardApp
             btnName.Value = "Connect";
 
             if (stream == null) return;
+
+            btnDisconnectIsEnable.Value = false;
 
             byte[] serverResponse = new byte[50];
 
@@ -197,18 +198,20 @@ namespace MacroBoardApp
                     WfList.Add(new Workflow(Encoding.ASCII.GetString(nameData, 0, nameData.Length),
                         byteArrayToImage(imgData.ToArray()), widthPhone));
 
-                    Console.WriteLine("Everything Received");
-
-                    if (clientSender == null)
-                        clientSender = new TcpClient(localAddr, 14000);
-
-                    Trace.WriteLine("Connected");
-
-                    btnName.Value = "Refresh";
+                    
                 }
 
+                Console.WriteLine("Everything Received");
+
+                if (clientSender == null)
+                    clientSender = new TcpClient(localAddr, 14000);
+
+                Trace.WriteLine("Connected");
+
+                btnName.Value = "Refresh";
+
                 btnConnectIsEnable.Value = true;
-                btnDisconnectIsEnable.Value = false;
+                btnDisconnectIsEnable.Value = true;
             }
             catch (Exception)
             {
